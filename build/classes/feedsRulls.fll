@@ -1,0 +1,40 @@
+Engine: Feeds_formulation
+
+InputVariable: feed_name
+  enabled: true
+  range: 0 1
+  lock-range: false
+  term: starter Triangle 0 0 0.5
+  term: grower Triangle 0 0.5 1
+  term: finisher Triangle 0.5 1 1
+
+InputVariable: specie
+  enabled: true
+  range: 0 1
+  lock-range: false
+  term: broilers Triangle 0 0 0.5
+  term: layers Triangle 0.5 0.75 1
+
+OutputVariable: matching_feeds
+  enabled: true
+  range: 0 1
+  lock-range: false
+  aggregation: Maximum
+  defuzzifier: Centroid 100
+  default: 0.0
+  lock-previous: false
+  term: broilers_chicks Triangle 0 0 0.5
+  term: broilers_finisher Triangle 0.5 0.5 1
+  term: layers_chicks Triangle 0.25 0.5 0.75
+  term: layers_growers Triangle 0.5 0.5 1
+
+RuleBlock: ruleBlock
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: AlgebraicProduct
+  activation: General
+  rule: if feed_name is starter and specie is broilers then matching_feeds is broilers_chicks
+  rule: if feed_name is starter and specie is layers then matching_feeds is layers_chicks
+  rule: if feed_name is grower and specie is layers then matching_feeds is layers_growers
+  rule: if feed_name is finisher and specie is broilers then matching_feeds is broilers_finisher
